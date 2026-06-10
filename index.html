@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="x-icon" href="icon.jpg">
+    <style>
+        :root {
+            --bg-dark: #09090b;
+            --card-glass: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #fafafa;
+            --text-muted: #a1a1aa;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.6);
+            --accent-hover: #60a5fa;
+            
+            /* Subject Colors */
+            --math: #ec4899;
+            --arch: #8b5cf6;
+            --flat: #10b981;
+            --daa: #f59e0b;
+            --evs: #14b8a6;
+            --bio: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Interactive Mouse Glow */
+        .cursor-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.05) 40%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            transition: width 0.2s, height 0.2s;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: slideDown 0.8s ease-out;
+            z-index: 10;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            background: var(--card-glass);
+            padding: 0.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease-out;
+            flex-wrap: wrap;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* Content Container */
+        .content-area {
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            animation: slideUpFade 0.6s ease-out forwards;
+        }
+
+        /* Countdown Tab */
+        .countdown-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+        }
+
+        .countdown-title {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .timer {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .time-box {
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            min-width: 140px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .time-box:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 40px var(--accent-glow);
+        }
+
+        .time-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .time-box span {
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 0 20px var(--accent-glow);
+            display: block;
+            line-height: 1;
+        }
+
+        .time-box p {
+            margin-top: 1rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Schedule Tab */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--card-border);
+        }
+
+        .exam-card {
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-left: 80px;
+            margin-bottom: 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .exam-card:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .exam-card::before {
+            content: '';
+            position: absolute;
+            left: -35px;
+            top: 24px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            z-index: 2;
+        }
+
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .exam-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .exam-date {
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .gap-indicator {
+            margin-left: 80px;
+            padding: 1rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.8;
+        }
+
+        .gap-line {
+            height: 1px;
+            flex-grow: 1;
+            background: dashed 1px var(--card-border);
+        }
+
+        /* Colors for Schedule */
+        .subj-math::before { background: var(--math); box-shadow: 0 0 10px var(--math); }
+        .subj-math .exam-date { color: var(--math); border: 1px solid var(--math); }
+        
+        .subj-arch::before { background: var(--arch); box-shadow: 0 0 10px var(--arch); }
+        .subj-arch .exam-date { color: var(--arch); border: 1px solid var(--arch); }
+        
+        .subj-flat::before { background: var(--flat); box-shadow: 0 0 10px var(--flat); }
+        .subj-flat .exam-date { color: var(--flat); border: 1px solid var(--flat); }
+        
+        .subj-daa::before { background: var(--daa); box-shadow: 0 0 10px var(--daa); }
+        .subj-daa .exam-date { color: var(--daa); border: 1px solid var(--daa); }
+        
+        .subj-evs::before { background: var(--evs); box-shadow: 0 0 10px var(--evs); }
+        .subj-evs .exam-date { color: var(--evs); border: 1px solid var(--evs); }
+        
+        .subj-bio::before { background: var(--bio); box-shadow: 0 0 10px var(--bio); }
+        .subj-bio .exam-date { color: var(--bio); border: 1px solid var(--bio); }
+
+        /* Routine Tab */
+        .routine-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .routine-item {
+            display: flex;
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .routine-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .time-slot {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1.2rem;
+            min-width: 200px;
+            font-weight: 600;
+            color: #e4e4e7;
+            display: flex;
+            align-items: center;
+            border-right: 1px solid var(--card-border);
+        }
+
+        .activity-slot {
+            padding: 1.2rem;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .study-block {
+            border-left: 4px solid var(--accent);
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
+        }
+
+        .study-block .activity-slot {
+            color: var(--accent-hover);
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .timer { gap: 1rem; }
+            .time-box { min-width: 100px; padding: 1.5rem 1rem; }
+            .time-box span { font-size: 2.5rem; }
+            
+            .timeline::before { left: 20px; }
+            .exam-card { margin-left: 40px; padding: 1rem; }
+            .exam-card::before { left: -26px; width: 10px; height: 10px; }
+            .gap-indicator { margin-left: 40px; }
+            
+            .routine-item { flex-direction: column; }
+            .time-slot { border-right: none; border-bottom: 1px solid var(--card-border); min-width: auto; padding: 0.8rem; }
+            .activity-slot { padding: 0.8rem; }
+            
+            /* Disable mouse glow on mobile for better performance */
+            .cursor-glow { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-glow" id="glow"></div>
+
+    <div class="dashboard-header">
+        <h1>Exam Hub</h1>
+    </div>
+
+    <nav class="tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'countdown')">⏳ Time Remaining</button>
+        <button class="tab-btn" onclick="switchTab(event, 'schedule')">📅 Exam Routine</button>
+        <button class="tab-btn" onclick="switchTab(event, 'daily')">⏱ Daily Routine</button>
+    </nav>
+
+    <div class="content-area">
+        
+        <div id="countdown" class="tab-content active">
+            <div class="countdown-wrapper">
+                <div class="countdown-title">Target: Discrete Mathematics</div>
+                <div class="timer">
+                    <div class="time-box">
+                        <span id="days">00</span>
+                        <p>DAYS</p>
+                    </div>
+                    <div class="time-box">
+                        <span id="hours">00</span>
+                        <p>HOURS</p>
+                    </div>
+                    <div class="time-box">
+                        <span id="minutes">00</span>
+                        <p>MINUTES</p>
+                    </div>
+                    <div class="time-box" style="animation: pulse 2s infinite;">
+                        <span id="seconds">00</span>
+                        <p>SECONDS</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="schedule" class="tab-content">
+            <div class="timeline">
+                
+                <div class="exam-card subj-math" style="animation-delay: 0.1s;">
+                    <div class="exam-header">
+                        <div class="exam-title">Discrete Mathematics (4407)</div>
+                        <div class="exam-date">Saturday, 27 Jun 2026</div>
+                    </div>
+                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
+                </div>
+
+                <div class="gap-indicator">
+                    <span>3 Days Prep</span>
+                    <div class="gap-line"></div>
+                </div>
+
+                <div class="exam-card subj-arch" style="animation-delay: 0.2s;">
+                    <div class="exam-header">
+                        <div class="exam-title">Computer Architecture (4442)</div>
+                        <div class="exam-date">Tuesday, 30 Jun 2026</div>
+                    </div>
+                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
+                </div>
+
+                <div class="gap-indicator">
+                    <span>2 Days Prep</span>
+                    <div class="gap-line"></div>
+                </div>
+
+                <div class="exam-card subj-flat" style="animation-delay: 0.3s;">
+                    <div class="exam-header">
+                        <div class="exam-title">Formal Language & Automata (4423)</div>
+                        <div class="exam-date">Thursday, 02 Jul 2026</div>
+                    </div>
+                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
+                </div>
+
+                <div class="gap-indicator">
+                    <span>2 Days Prep</span>
+                    <div class="gap-line"></div>
+                </div>
+
+                <div class="exam-card subj-daa" style="animation-delay: 0.4s;">
+                    <div class="exam-header">
+                        <div class="exam-title">Design and Analysis of Algorithm (4416)</div>
+                        <div class="exam-date">Saturday, 04 Jul 2026</div>
+                    </div>
+                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
+                </div>
+
+                <div class="gap-indicator">
+                    <span>3 Days Prep</span>
+                    <div class="gap-line"></div>
+                </div>
+
+                <div class="exam-card subj-evs" style="animation-delay: 0.5s;">
+                    <div class="exam-header">
+                        <div class="exam-title">Environmental Sciences (4421)</div>
+                        <div class="exam-date">Tuesday, 07 Jul 2026</div>
+                    </div>
+                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
+                </div>
+
+                <div class="gap-indicator">
+                    <span>2 Days Prep</span>
+                    <div class="gap-line"></div>
+                </div>
+
+                <div class="exam-card subj-bio" style="animation-delay: 0.6s;">
+                    <div class="exam-header">
+                        <div class="exam-title">Biology (4408)</div>
+                        <div class="exam-date">Thursday, 09 Jul 2026</div>
+                    </div>
+                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="daily" class="tab-content">
+            <div class="routine-grid">
+                <div class="routine-item"><div class="time-slot">6:30 AM</div><div class="activity-slot">Wake up & Freshen up</div></div>
+                <div class="routine-item study-block"><div class="time-slot">7:00 AM - 9:00 AM</div><div class="activity-slot">📚 Study Session 1</div></div>
+                <div class="routine-item"><div class="time-slot">9:00 AM - 9:30 AM</div><div class="activity-slot">🍳 Breakfast</div></div>
+                <div class="routine-item study-block"><div class="time-slot">9:30 AM - 12:00 PM</div><div class="activity-slot">📚 Study Session 2</div></div>
+                <div class="routine-item"><div class="time-slot">12:00 PM - 1:00 PM</div><div class="activity-slot">🍛 Lunch</div></div>
+                <div class="routine-item"><div class="time-slot">1:00 PM - 2:00 PM</div><div class="activity-slot">💤 Nap</div></div>
+                <div class="routine-item study-block"><div class="time-slot">2:00 PM - 5:30 PM</div><div class="activity-slot">📚 Study Session 3</div></div>
+                <div class="routine-item"><div class="time-slot">5:30 PM - 6:00 PM</div><div class="activity-slot">☕ Snacks</div></div>
+                <div class="routine-item study-block"><div class="time-slot">6:00 PM - 9:00 PM</div><div class="activity-slot">📚 Study Session 4</div></div>
+                <div class="routine-item"><div class="time-slot">9:00 PM - 9:30 PM</div><div class="activity-slot">🍽️ Dinner</div></div>
+                <div class="routine-item study-block"><div class="time-slot">9:30 PM - 1:30 AM</div><div class="activity-slot">🔥 Study Session 5 + Revision + PYQs</div></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Interactive Mouse Glow Logic ---
+        const glow = document.getElementById('glow');
+        
+        // Listen for mouse movement
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // Make the glow expand slightly when clicking
+        document.addEventListener('mousedown', () => {
+            glow.style.transform = 'translate(-50%, -50%) scale(1.1)';
+            glow.style.background = 'radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(139, 92, 246, 0.1) 40%, transparent 70%)';
+        });
+        
+        document.addEventListener('mouseup', () => {
+            glow.style.transform = 'translate(-50%, -50%) scale(1)';
+            glow.style.background = 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.05) 40%, transparent 70%)';
+        });
+
+        // --- Tab Switching Logic ---
+        function switchTab(evt, tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // --- Countdown Timer Logic ---
+        const countDownDate = new Date("Jun 27, 2026 10:00:00").getTime();
+
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerHTML = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerHTML = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+
+            if (distance < 0) {
+                clearInterval(x);
+                document.querySelector(".timer").innerHTML = "<h2 style='font-size: 2rem; color: #10b981;'>IT'S EXAM TIME! BEST OF LUCK!</h2>";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
