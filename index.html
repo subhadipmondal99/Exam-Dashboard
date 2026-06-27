@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" type="x-icon" href="lo.png">
+    <link rel="shortcut icon" type="image/x-icon" href="lo.png">
     <style>
         :root {
             --bg-dark: #09090b;
@@ -420,7 +420,7 @@
         
         <div id="countdown" class="tab-content active">
             <div class="countdown-wrapper">
-                <div class="countdown-title">Target: Discrete Mathematics</div>
+                <div class="countdown-title">Target: Loading...</div>
                 <div class="timer">
                     <div class="time-box">
                         <span id="days">00</span>
@@ -543,13 +543,11 @@
         // --- Interactive Mouse Glow Logic ---
         const glow = document.getElementById('glow');
         
-        // Listen for mouse movement
         document.addEventListener('mousemove', (e) => {
             glow.style.left = e.clientX + 'px';
             glow.style.top = e.clientY + 'px';
         });
 
-        // Make the glow expand slightly when clicking
         document.addEventListener('mousedown', () => {
             glow.style.transform = 'translate(-50%, -50%) scale(1.1)';
             glow.style.background = 'radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(139, 92, 246, 0.1) 40%, transparent 70%)';
@@ -576,28 +574,94 @@
             evt.currentTarget.classList.add('active');
         }
 
-        // --- Countdown Timer Logic ---
-        const countDownDate = new Date("Jun 27, 2026 10:00:00").getTime();
+        // --- Dynamic Countdown Timer Logic ---
+        // Array holding the exact start and end times for all your exams
+        const exams = [
+            { name: "Discrete Mathematics", start: new Date("Jun 27, 2026 10:00:00").getTime(), end: new Date("Jun 27, 2026 13:00:00").getTime() },
+            { name: "Computer Architecture", start: new Date("Jun 30, 2026 10:00:00").getTime(), end: new Date("Jun 30, 2026 13:00:00").getTime() },
+            { name: "Formal Language & Automata", start: new Date("Jul 02, 2026 10:00:00").getTime(), end: new Date("Jul 02, 2026 13:00:00").getTime() },
+            { name: "Design and Analysis of Algorithm", start: new Date("Jul 04, 2026 10:00:00").getTime(), end: new Date("Jul 04, 2026 13:00:00").getTime() },
+            { name: "Environmental Sciences", start: new Date("Jul 07, 2026 10:00:00").getTime(), end: new Date("Jul 07, 2026 13:00:00").getTime() },
+            { name: "Biology", start: new Date("Jul 09, 2026 10:00:00").getTime(), end: new Date("Jul 09, 2026 13:00:00").getTime() }
+        ];
 
-        const x = setInterval(function() {
+        const timerEl = document.querySelector(".timer");
+        const titleEl = document.querySelector(".countdown-title");
+
+        function updateCountdown() {
             const now = new Date().getTime();
-            const distance = countDownDate - now;
+            let currentOrNextExam = null;
+            let isExamRunning = false;
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("days").innerHTML = days < 10 ? "0" + days : days;
-            document.getElementById("hours").innerHTML = hours < 10 ? "0" + hours : hours;
-            document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
-            document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
-
-            if (distance < 0) {
-                clearInterval(x);
-                document.querySelector(".timer").innerHTML = "<h2 style='font-size: 2rem; color: #10b981;'>IT'S EXAM TIME! BEST OF LUCK!</h2>";
+            // Find the next upcoming or currently running exam
+            for (let i = 0; i < exams.length; i++) {
+                if (now < exams[i].end) {
+                    currentOrNextExam = exams[i];
+                    // If we are currently between 10 AM and 1 PM on an exam day
+                    if (now >= exams[i].start && now <= exams[i].end) {
+                        isExamRunning = true;
+                    }
+                    break;
+                }
             }
-        }, 1000);
+
+            // If all exams have finished completely
+            if (!currentOrNextExam) {
+                titleEl.innerHTML = "All Targets Reached";
+                timerEl.innerHTML = "<h2 style='font-size: 2rem; color: #10b981;'>ALL EXAMS COMPLETED! GO ENJOY!</h2>";
+                return true; 
+            }
+
+            titleEl.innerHTML = "Target: " + currentOrNextExam.name;
+
+            // Handle the UI while the exam is currently happening
+            if (isExamRunning) {
+                timerEl.innerHTML = "<h2 style='font-size: 2rem; color: #10b981;'>IT'S EXAM TIME! BEST OF LUCK!</h2>";
+            } else {
+                // If the exam is in the future, calculate standard countdown
+                const distance = currentOrNextExam.start - now;
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // Re-inject the timer HTML structure if it was overwritten by the "EXAM TIME" message earlier
+                if (!document.getElementById("days")) {
+                    timerEl.innerHTML = `
+                        <div class="time-box">
+                            <span id="days">00</span>
+                            <p>DAYS</p>
+                        </div>
+                        <div class="time-box">
+                            <span id="hours">00</span>
+                            <p>HOURS</p>
+                        </div>
+                        <div class="time-box">
+                            <span id="minutes">00</span>
+                            <p>MINUTES</p>
+                        </div>
+                        <div class="time-box" style="animation: pulse 2s infinite;">
+                            <span id="seconds">00</span>
+                            <p>SECONDS</p>
+                        </div>
+                    `;
+                }
+
+                document.getElementById("days").innerHTML = days < 10 ? "0" + days : days;
+                document.getElementById("hours").innerHTML = hours < 10 ? "0" + hours : hours;
+                document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+                document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+            }
+            return false;
+        }
+
+        // Run function immediately to avoid 1-second delay, then set interval
+        const isFinished = updateCountdown();
+        if (!isFinished) {
+            const intervalId = setInterval(() => {
+                if (updateCountdown()) clearInterval(intervalId);
+            }, 1000);
+        }
     </script>
 </body>
 </html>
