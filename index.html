@@ -4,37 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="lo.png">
     <style>
         :root {
-            --bg-dark: #09090b;
-            --card-glass: rgba(255, 255, 255, 0.05);
+            --card-glass: rgba(15, 15, 18, 0.65);
             --card-border: rgba(255, 255, 255, 0.1);
-            --text-main: #fafafa;
-            --text-muted: #a1a1aa;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.6);
-            --accent-hover: #60a5fa;
-            
-            /* Subject Colors */
-            --math: #ec4899;
-            --arch: #8b5cf6;
-            --flat: #10b981;
-            --daa: #f59e0b;
-            --evs: #14b8a6;
-            --bio: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --accent: #ef4444; 
+            --accent-glow: rgba(239, 68, 68, 0.5);
+            --accent-hover: #f87171;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url('https://img.magnific.com/free-photo/red-geranium-flowers-dark-background_84443-82204.jpg?semt=ais_hybrid&w=740&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #050505;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -43,6 +37,7 @@
             padding: 2rem 1rem;
             overflow-x: hidden;
             position: relative;
+            font-family: 'Poppins', sans-serif;
         }
 
         /* Interactive Mouse Glow */
@@ -50,9 +45,9 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.05) 40%, transparent 70%);
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(0, 0, 0, 0) 50%);
             border-radius: 50%;
             pointer-events: none;
             transform: translate(-50%, -50%);
@@ -63,56 +58,71 @@
         .dashboard-header {
             text-align: center;
             margin-bottom: 2rem;
-            animation: slideDown 0.8s ease-out;
+            animation: slideDown 1s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 10;
         }
 
         .dashboard-header h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .dashboard-header p {
+            font-size: 1rem;
+            color: var(--accent);
+            letter-spacing: 3px;
+            margin-top: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
         }
 
         /* Tab Navigation */
         .tabs {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
             background: var(--card-glass);
             padding: 0.5rem;
             border-radius: 50px;
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
-            margin-bottom: 2rem;
-            animation: fadeIn 1s ease-out;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin-bottom: 3rem;
+            animation: fadeIn 1.2s ease-out;
             flex-wrap: wrap;
             justify-content: center;
             z-index: 10;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .tab-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            padding: 0.8rem 1.5rem;
+            padding: 0.8rem 1.8rem;
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .tab-btn:hover {
             color: var(--text-main);
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .tab-btn.active {
             background: var(--accent);
             color: white;
-            box-shadow: 0 0 15px var(--accent-glow);
+            box-shadow: 0 0 20px var(--accent-glow);
+            font-weight: 800;
         }
 
         /* Content Container */
@@ -126,15 +136,15 @@
         .tab-content {
             display: none;
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .tab-content.active {
             display: block;
             opacity: 1;
             transform: translateY(0);
-            animation: slideUpFade 0.6s ease-out forwards;
+            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         /* Countdown Tab */
@@ -143,226 +153,125 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 50vh;
+            min-height: 45vh;
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 4rem 2rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 100%;
         }
 
         .countdown-title {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--accent);
+            margin-bottom: 2.5rem;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--accent-glow);
+            text-align: center;
+            line-height: 1.4;
         }
 
         .timer {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             flex-wrap: wrap;
             justify-content: center;
+            width: 100%;
         }
 
         .time-box {
-            background: var(--card-glass);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 2rem 1.5rem;
+            border-radius: 16px;
             text-align: center;
-            min-width: 140px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            min-width: 130px;
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
         }
 
         .time-box:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 12px 40px var(--accent-glow);
-        }
-
-        .time-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 2px;
-            background: var(--accent);
-            box-shadow: 0 0 10px var(--accent);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px var(--accent-glow);
+            border-color: var(--accent);
         }
 
         .time-box span {
-            font-size: 4rem;
+            font-size: 4.5rem;
             font-weight: 800;
             color: white;
-            text-shadow: 0 0 20px var(--accent-glow);
+            text-shadow: 0 0 15px rgba(255,255,255,0.3);
             display: block;
             line-height: 1;
         }
 
         .time-box p {
             margin-top: 1rem;
-            color: var(--text-muted);
+            color: var(--accent);
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
         }
 
-        /* Schedule Tab */
-        .timeline {
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--card-border);
-        }
-
-        .exam-card {
+        /* Motivation & Strategy Tabs */
+        .motivation-container {
+            text-align: center;
+            padding: 5rem 2rem;
             background: var(--card-glass);
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-left: 80px;
-            margin-bottom: 0;
-            position: relative;
-            transition: all 0.3s ease;
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        .exam-card:hover {
-            transform: translateX(10px);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
+        .quote-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+            color: white;
+            margin-bottom: 1.5rem;
         }
 
-        .exam-card::before {
-            content: '';
-            position: absolute;
-            left: -35px;
-            top: 24px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 10px var(--accent);
-            z-index: 2;
+        .highlight-red {
+            color: var(--accent);
+            text-shadow: 0 0 20px var(--accent-glow);
+            text-transform: uppercase;
+            display: block;
+            margin-top: 0.5rem;
+            letter-spacing: 2px;
         }
 
-        .exam-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+        .subtext {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto 3rem auto;
+            font-weight: 300;
         }
 
-        .exam-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .exam-date {
-            padding: 0.4rem 1rem;
+        .status-badge {
+            display: inline-block;
+            padding: 0.8rem 2rem;
             border-radius: 50px;
-            font-size: 0.9rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--accent);
             font-weight: 600;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .gap-indicator {
-            margin-left: 80px;
-            padding: 1rem 0;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            opacity: 0.8;
-        }
-
-        .gap-line {
-            height: 1px;
-            flex-grow: 1;
-            background: dashed 1px var(--card-border);
-        }
-
-        /* Colors for Schedule */
-        .subj-math::before { background: var(--math); box-shadow: 0 0 10px var(--math); }
-        .subj-math .exam-date { color: var(--math); border: 1px solid var(--math); }
-        
-        .subj-arch::before { background: var(--arch); box-shadow: 0 0 10px var(--arch); }
-        .subj-arch .exam-date { color: var(--arch); border: 1px solid var(--arch); }
-        
-        .subj-flat::before { background: var(--flat); box-shadow: 0 0 10px var(--flat); }
-        .subj-flat .exam-date { color: var(--flat); border: 1px solid var(--flat); }
-        
-        .subj-daa::before { background: var(--daa); box-shadow: 0 0 10px var(--daa); }
-        .subj-daa .exam-date { color: var(--daa); border: 1px solid var(--daa); }
-        
-        .subj-evs::before { background: var(--evs); box-shadow: 0 0 10px var(--evs); }
-        .subj-evs .exam-date { color: var(--evs); border: 1px solid var(--evs); }
-        
-        .subj-bio::before { background: var(--bio); box-shadow: 0 0 10px var(--bio); }
-        .subj-bio .exam-date { color: var(--bio); border: 1px solid var(--bio); }
-
-        /* Routine Tab */
-        .routine-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .routine-item {
-            display: flex;
-            background: var(--card-glass);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        }
-
-        .routine-item:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .time-slot {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 1.2rem;
-            min-width: 200px;
-            font-weight: 600;
-            color: #e4e4e7;
-            display: flex;
-            align-items: center;
-            border-right: 1px solid var(--card-border);
-        }
-
-        .activity-slot {
-            padding: 1.2rem;
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-        }
-
-        .study-block {
-            border-left: 4px solid var(--accent);
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
-        }
-
-        .study-block .activity-slot {
-            color: var(--accent-hover);
-            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            animation: pulseGlow 2s infinite;
         }
 
         /* Animations */
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
+            from { opacity: 0; transform: translateY(-40px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -372,32 +281,44 @@
         }
 
         @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        /* Responsive */
+        /* Responsive - specifically fixed for mobile */
         @media (max-width: 768px) {
-            .timer { gap: 1rem; }
-            .time-box { min-width: 100px; padding: 1.5rem 1rem; }
-            .time-box span { font-size: 2.5rem; }
+            .dashboard-header h1 { font-size: 2.2rem; letter-spacing: 2px; }
+            .dashboard-header p { font-size: 0.85rem; }
             
-            .timeline::before { left: 20px; }
-            .exam-card { margin-left: 40px; padding: 1rem; }
-            .exam-card::before { left: -26px; width: 10px; height: 10px; }
-            .gap-indicator { margin-left: 40px; }
+            .tabs { padding: 0.3rem; border-radius: 16px; }
+            .tab-btn { padding: 0.8rem 0.5rem; font-size: 0.75rem; border-radius: 12px; flex: 1; text-align: center; }
             
-            .routine-item { flex-direction: column; }
-            .time-slot { border-right: none; border-bottom: 1px solid var(--card-border); min-width: auto; padding: 0.8rem; }
-            .activity-slot { padding: 0.8rem; }
+            /* Forced single line layout for mobile timer */
+            .countdown-wrapper { padding: 3rem 1rem; }
+            .timer { 
+                gap: 0.5rem; 
+                flex-wrap: nowrap; 
+                justify-content: space-between; 
+            }
+            .time-box { 
+                min-width: 0; 
+                flex: 1; 
+                padding: 1.2rem 0.2rem; 
+                border-radius: 10px; 
+            }
+            .time-box span { font-size: 1.8rem; }
+            .time-box p { font-size: 0.6rem; letter-spacing: 0px; margin-top: 0.5rem; }
             
-            /* Disable mouse glow on mobile for better performance */
+            .countdown-title { font-size: 1.3rem; letter-spacing: 2px; }
+            .quote-title { font-size: 1.8rem; }
+            
+            .motivation-container { padding: 3rem 1.5rem; }
             .cursor-glow { display: none; }
         }
     </style>
@@ -408,19 +329,21 @@
 
     <div class="dashboard-header">
         <h1>Exam Hub</h1>
+        <p>Operation: 5th Semester</p>
     </div>
 
     <nav class="tabs">
-        <button class="tab-btn active" onclick="switchTab(event, 'countdown')">⏳ Time Remaining</button>
+        <button class="tab-btn active" onclick="switchTab(event, 'countdown')">⏳ Countdown</button>
         <button class="tab-btn" onclick="switchTab(event, 'schedule')">📅 Exam Routine</button>
-        <button class="tab-btn" onclick="switchTab(event, 'daily')">⏱ Daily Routine</button>
+        <button class="tab-btn" onclick="switchTab(event, 'daily')">🔥 My Rules</button>
     </nav>
 
     <div class="content-area">
         
+        <!-- COUNTDOWN TAB -->
         <div id="countdown" class="tab-content active">
             <div class="countdown-wrapper">
-                <div class="countdown-title">Target: Loading...</div>
+                <div class="countdown-title">DON'T STOP UNTIL<br>YOU ARE PROUD.</div>
                 <div class="timer">
                     <div class="time-box">
                         <span id="days">00</span>
@@ -434,7 +357,7 @@
                         <span id="minutes">00</span>
                         <p>MINUTES</p>
                     </div>
-                    <div class="time-box" style="animation: pulse 2s infinite;">
+                    <div class="time-box" style="border-color: var(--accent);">
                         <span id="seconds">00</span>
                         <p>SECONDS</p>
                     </div>
@@ -442,105 +365,39 @@
             </div>
         </div>
 
+        <!-- EXAM ROUTINE TAB -->
         <div id="schedule" class="tab-content">
-            <div class="timeline">
-                
-                <div class="exam-card subj-math" style="animation-delay: 0.1s;">
-                    <div class="exam-header">
-                        <div class="exam-title">Discrete Mathematics (4407)</div>
-                        <div class="exam-date">Saturday, 27 Jun 2026</div>
-                    </div>
-                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
+            <div class="motivation-container">
+                <div class="quote-title">
+                    The schedule is unwritten.<br>
+                    <span class="highlight-red">But the battle is inevitable.</span>
                 </div>
-
-                <div class="gap-indicator">
-                    <span>3 Days Prep</span>
-                    <div class="gap-line"></div>
+                <p class="subtext">
+                    The official exam dates have not been declared yet. Estimated target is <strong>December 20, 2026</strong>. Do not wait for the paper to be published. Use this silence to build your empire. Every hour you study now is a mark on your victory board.
+                </p>
+                <div class="status-badge">
+                    Awaiting Official Routine
                 </div>
-
-                <div class="exam-card subj-arch" style="animation-delay: 0.2s;">
-                    <div class="exam-header">
-                        <div class="exam-title">Computer Architecture (4442)</div>
-                        <div class="exam-date">Tuesday, 30 Jun 2026</div>
-                    </div>
-                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
-                </div>
-
-                <div class="gap-indicator">
-                    <span>2 Days Prep</span>
-                    <div class="gap-line"></div>
-                </div>
-
-                <div class="exam-card subj-flat" style="animation-delay: 0.3s;">
-                    <div class="exam-header">
-                        <div class="exam-title">Formal Language & Automata (4423)</div>
-                        <div class="exam-date">Thursday, 02 Jul 2026</div>
-                    </div>
-                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
-                </div>
-
-                <div class="gap-indicator">
-                    <span>2 Days Prep</span>
-                    <div class="gap-line"></div>
-                </div>
-
-                <div class="exam-card subj-daa" style="animation-delay: 0.4s;">
-                    <div class="exam-header">
-                        <div class="exam-title">Design and Analysis of Algorithm (4416)</div>
-                        <div class="exam-date">Saturday, 04 Jul 2026</div>
-                    </div>
-                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
-                </div>
-
-                <div class="gap-indicator">
-                    <span>3 Days Prep</span>
-                    <div class="gap-line"></div>
-                </div>
-
-                <div class="exam-card subj-evs" style="animation-delay: 0.5s;">
-                    <div class="exam-header">
-                        <div class="exam-title">Environmental Sciences (4421)</div>
-                        <div class="exam-date">Tuesday, 07 Jul 2026</div>
-                    </div>
-                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
-                </div>
-
-                <div class="gap-indicator">
-                    <span>2 Days Prep</span>
-                    <div class="gap-line"></div>
-                </div>
-
-                <div class="exam-card subj-bio" style="animation-delay: 0.6s;">
-                    <div class="exam-header">
-                        <div class="exam-title">Biology (4408)</div>
-                        <div class="exam-date">Thursday, 09 Jul 2026</div>
-                    </div>
-                    <div class="exam-time">⏱ 10:00 AM - 1:00 PM</div>
-                </div>
-
             </div>
         </div>
 
+        <!-- DAILY ROUTINE (CUSTOM RULES) TAB -->
         <div id="daily" class="tab-content">
-            <div class="routine-grid">
-                <div class="routine-item"><div class="time-slot">6:30 AM</div><div class="activity-slot">Wake up & Freshen up</div></div>
-                <div class="routine-item study-block"><div class="time-slot">7:00 AM - 9:00 AM</div><div class="activity-slot">📚 Study Session 1</div></div>
-                <div class="routine-item"><div class="time-slot">9:00 AM - 9:30 AM</div><div class="activity-slot">🍳 Breakfast</div></div>
-                <div class="routine-item study-block"><div class="time-slot">9:30 AM - 12:00 PM</div><div class="activity-slot">📚 Study Session 2</div></div>
-                <div class="routine-item"><div class="time-slot">12:00 PM - 1:00 PM</div><div class="activity-slot">🍛 Lunch</div></div>
-                <div class="routine-item"><div class="time-slot">1:00 PM - 2:00 PM</div><div class="activity-slot">💤 Nap</div></div>
-                <div class="routine-item study-block"><div class="time-slot">2:00 PM - 5:30 PM</div><div class="activity-slot">📚 Study Session 3</div></div>
-                <div class="routine-item"><div class="time-slot">5:30 PM - 6:00 PM</div><div class="activity-slot">☕ Snacks</div></div>
-                <div class="routine-item study-block"><div class="time-slot">6:00 PM - 9:00 PM</div><div class="activity-slot">📚 Study Session 4</div></div>
-                <div class="routine-item"><div class="time-slot">9:00 PM - 9:30 PM</div><div class="activity-slot">🍽️ Dinner</div></div>
-                <div class="routine-item study-block"><div class="time-slot">9:30 PM - 1:30 AM</div><div class="activity-slot">🔥 Study Session 5 + Revision + PYQs</div></div>
+            <div class="motivation-container">
+                <div class="quote-title">
+                    Now you have time.<br>
+                    <span class="highlight-red">Prepare by your own rules.<br>Win the war.</span>
+                </div>
+                <p class="subtext" style="margin-bottom: 0;">
+                    No strict timetables. No fixed schedules. Just absolute focus and discipline. Use this freedom to build your own strategy and conquer the syllabus on your terms.
+                </p>
             </div>
         </div>
 
     </div>
 
     <script>
-        // --- Interactive Mouse Glow Logic ---
+        // Interactive Mouse Glow Logic
         const glow = document.getElementById('glow');
         
         document.addEventListener('mousemove', (e) => {
@@ -550,15 +407,15 @@
 
         document.addEventListener('mousedown', () => {
             glow.style.transform = 'translate(-50%, -50%) scale(1.1)';
-            glow.style.background = 'radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(139, 92, 246, 0.1) 40%, transparent 70%)';
+            glow.style.background = 'radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(0, 0, 0, 0) 60%)';
         });
         
         document.addEventListener('mouseup', () => {
             glow.style.transform = 'translate(-50%, -50%) scale(1)';
-            glow.style.background = 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.05) 40%, transparent 70%)';
+            glow.style.background = 'radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(0, 0, 0, 0) 50%)';
         });
 
-        // --- Tab Switching Logic ---
+        // Tab Switching Logic
         function switchTab(evt, tabId) {
             const contents = document.querySelectorAll('.tab-content');
             contents.forEach(content => {
@@ -574,88 +431,34 @@
             evt.currentTarget.classList.add('active');
         }
 
-        // --- Dynamic Countdown Timer Logic ---
-        // Array holding the exact start and end times for all your exams
-        const exams = [
-            { name: "Discrete Mathematics", start: new Date("Jun 27, 2026 10:00:00").getTime(), end: new Date("Jun 27, 2026 13:00:00").getTime() },
-            { name: "Computer Architecture", start: new Date("Jun 30, 2026 10:00:00").getTime(), end: new Date("Jun 30, 2026 13:00:00").getTime() },
-            { name: "Formal Language & Automata", start: new Date("Jul 02, 2026 10:00:00").getTime(), end: new Date("Jul 02, 2026 13:00:00").getTime() },
-            { name: "Design and Analysis of Algorithm", start: new Date("Jul 04, 2026 10:00:00").getTime(), end: new Date("Jul 04, 2026 13:00:00").getTime() },
-            { name: "Environmental Sciences", start: new Date("Jul 07, 2026 10:00:00").getTime(), end: new Date("Jul 07, 2026 13:00:00").getTime() },
-            { name: "Biology", start: new Date("Jul 09, 2026 10:00:00").getTime(), end: new Date("Jul 09, 2026 13:00:00").getTime() }
-        ];
-
+        // Dynamic Countdown Timer Logic (Targeting Dec 20, 2026)
+        const countDownDate = new Date("Dec 20, 2026 10:00:00").getTime();
         const timerEl = document.querySelector(".timer");
         const titleEl = document.querySelector(".countdown-title");
 
         function updateCountdown() {
             const now = new Date().getTime();
-            let currentOrNextExam = null;
-            let isExamRunning = false;
+            const distance = countDownDate - now;
 
-            // Find the next upcoming or currently running exam
-            for (let i = 0; i < exams.length; i++) {
-                if (now < exams[i].end) {
-                    currentOrNextExam = exams[i];
-                    // If we are currently between 10 AM and 1 PM on an exam day
-                    if (now >= exams[i].start && now <= exams[i].end) {
-                        isExamRunning = true;
-                    }
-                    break;
-                }
-            }
-
-            // If all exams have finished completely
-            if (!currentOrNextExam) {
-                titleEl.innerHTML = "All Targets Reached";
-                timerEl.innerHTML = "<h2 style='font-size: 2rem; color: #10b981;'>ALL EXAMS COMPLETED! GO ENJOY!</h2>";
+            if (distance < 0) {
+                titleEl.innerHTML = "THE TIME HAS COME.";
+                timerEl.innerHTML = "<h2 style='font-size: 2.5rem; color: #ef4444; font-weight: 800; text-shadow: 0 0 20px rgba(239,68,68,0.5); text-align: center;'>IT'S EXAM SEASON!</h2>";
                 return true; 
             }
 
-            titleEl.innerHTML = "Target: " + currentOrNextExam.name;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // Handle the UI while the exam is currently happening
-            if (isExamRunning) {
-                timerEl.innerHTML = "<h2 style='font-size: 2rem; color: #10b981;'>IT'S EXAM TIME! BEST OF LUCK!</h2>";
-            } else {
-                // If the exam is in the future, calculate standard countdown
-                const distance = currentOrNextExam.start - now;
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                
-                // Re-inject the timer HTML structure if it was overwritten by the "EXAM TIME" message earlier
-                if (!document.getElementById("days")) {
-                    timerEl.innerHTML = `
-                        <div class="time-box">
-                            <span id="days">00</span>
-                            <p>DAYS</p>
-                        </div>
-                        <div class="time-box">
-                            <span id="hours">00</span>
-                            <p>HOURS</p>
-                        </div>
-                        <div class="time-box">
-                            <span id="minutes">00</span>
-                            <p>MINUTES</p>
-                        </div>
-                        <div class="time-box" style="animation: pulse 2s infinite;">
-                            <span id="seconds">00</span>
-                            <p>SECONDS</p>
-                        </div>
-                    `;
-                }
-
-                document.getElementById("days").innerHTML = days < 10 ? "0" + days : days;
-                document.getElementById("hours").innerHTML = hours < 10 ? "0" + hours : hours;
-                document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
-                document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
-            }
+            document.getElementById("days").innerHTML = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerHTML = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+            
             return false;
         }
 
-        // Run function immediately to avoid 1-second delay, then set interval
         const isFinished = updateCountdown();
         if (!isFinished) {
             const intervalId = setInterval(() => {
